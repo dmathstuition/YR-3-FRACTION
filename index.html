@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Adding Fractions – Year 3</title>
+<title>Adding Fractions – Year 4</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -17,335 +17,190 @@
     --dark: #2d2d2d;
     --card: #ffffff;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', sans-serif; background: var(--sky); min-height: 100vh; overflow-x: hidden; }
 
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--sky);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* Floating bubbles background */
   .bubbles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-  .bubble {
-    position: absolute;
-    border-radius: 50%;
-    opacity: 0.12;
-    animation: float linear infinite;
-  }
-  @keyframes float {
-    0% { transform: translateY(110vh) scale(0.8); }
-    100% { transform: translateY(-20vh) scale(1.2); }
-  }
+  .bubble { position: absolute; border-radius: 50%; opacity: 0.10; animation: float linear infinite; }
+  @keyframes float { 0%{transform:translateY(110vh) scale(.8)} 100%{transform:translateY(-20vh) scale(1.2)} }
 
-  .wrapper { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 24px 20px 60px; }
+  .wrapper { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
 
-  /* HEADER */
-  header { text-align: center; margin-bottom: 36px; }
-  .badge {
-    display: inline-block;
-    background: var(--orange);
-    color: #fff;
-    font-family: 'Fredoka One', cursive;
-    font-size: 13px;
-    padding: 4px 16px;
-    border-radius: 20px;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    box-shadow: 0 3px 10px rgba(255,107,53,0.35);
-  }
-  h1 {
-    font-family: 'Fredoka One', cursive;
-    font-size: clamp(28px, 6vw, 46px);
-    color: var(--dark);
-    line-height: 1.1;
-  }
-  h1 span { color: var(--orange); }
-  .subtitle { color: #888; font-size: 15px; margin-top: 6px; font-weight: 600; }
+  header { text-align: center; margin-bottom: 28px; }
+  .badge { display:inline-block; background:var(--orange); color:#fff; font-family:'Fredoka One',cursive; font-size:13px; padding:4px 16px; border-radius:20px; letter-spacing:1px; margin-bottom:10px; box-shadow:0 3px 10px rgba(255,107,53,.35); }
+  h1 { font-family:'Fredoka One',cursive; font-size:clamp(26px,6vw,44px); color:var(--dark); line-height:1.1; }
+  h1 span { color:var(--orange); }
+  .subtitle { color:#999; font-size:14px; margin-top:5px; font-weight:700; }
 
-  /* TABS */
-  .tabs { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
-  .tab {
-    font-family: 'Fredoka One', cursive;
-    font-size: 16px;
-    padding: 10px 28px;
-    border-radius: 50px;
-    border: 3px solid transparent;
-    cursor: pointer;
-    transition: all 0.25s;
-    background: #fff;
-    color: #aaa;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  }
-  .tab.active-like { background: var(--green); color: #fff; border-color: #4a9f56; box-shadow: 0 6px 18px rgba(107,203,119,0.4); }
-  .tab.active-unlike { background: var(--blue); color: #fff; border-color: #2e74cc; box-shadow: 0 6px 18px rgba(77,150,255,0.4); }
-  .tab:not(.active-like):not(.active-unlike):hover { border-color: #ccc; color: #555; }
+  .tabs { display:flex; gap:10px; justify-content:center; margin-bottom:24px; flex-wrap:wrap; }
+  .tab { font-family:'Fredoka One',cursive; font-size:15px; padding:10px 22px; border-radius:50px; border:3px solid transparent; cursor:pointer; transition:all .25s; background:#fff; color:#aaa; box-shadow:0 4px 12px rgba(0,0,0,.08); }
+  .tab.t-like   { background:var(--green);  color:#fff; border-color:#4a9f56; box-shadow:0 6px 18px rgba(107,203,119,.4); }
+  .tab.t-unlike { background:var(--blue);   color:#fff; border-color:#2e74cc; box-shadow:0 6px 18px rgba(77,150,255,.4); }
+  .tab.t-quiz   { background:var(--orange); color:#fff; border-color:#c94e1d; box-shadow:0 6px 18px rgba(255,107,53,.4); }
 
-  /* LESSON CARD */
-  .lesson { display: none; animation: slideIn 0.4s ease; }
-  .lesson.active { display: block; }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  .lesson { display:none; animation:slideIn .4s ease; }
+  .lesson.active { display:block; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 
-  /* STEP */
-  .step-card {
-    background: var(--card);
-    border-radius: 24px;
-    padding: 28px 32px;
-    margin-bottom: 20px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.07);
-    border-left: 6px solid var(--green);
-    position: relative;
-    overflow: hidden;
-  }
-  .step-card.blue-border { border-left-color: var(--blue); }
-  .step-card.yellow-border { border-left-color: var(--yellow); border-left-width: 6px; }
-  .step-card.purple-border { border-left-color: var(--purple); }
+  .step-card { background:var(--card); border-radius:24px; padding:26px 28px; margin-bottom:20px; box-shadow:0 6px 24px rgba(0,0,0,.07); border-left:6px solid var(--green); }
+  .step-card.blue-border   { border-left-color:var(--blue); }
+  .step-card.yellow-border { border-left-color:var(--yellow); }
+  .step-card.purple-border { border-left-color:var(--purple); }
+  .step-num { font-family:'Fredoka One',cursive; font-size:11px; text-transform:uppercase; letter-spacing:2px; color:#bbb; margin-bottom:5px; }
+  .step-title { font-family:'Fredoka One',cursive; font-size:21px; color:var(--dark); margin-bottom:12px; }
 
-  .step-num {
-    font-family: 'Fredoka One', cursive;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #bbb;
-    margin-bottom: 6px;
-  }
-  .step-title {
-    font-family: 'Fredoka One', cursive;
-    font-size: 22px;
-    color: var(--dark);
-    margin-bottom: 14px;
-  }
+  .pie-row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:center; margin:16px 0; }
+  .pie-wrap { text-align:center; }
+  .pie-label { font-family:'Fredoka One',cursive; font-size:24px; margin-top:6px; color:var(--dark); }
+  .pie-sub { font-size:11px; color:#999; font-weight:700; }
+  .op { font-family:'Fredoka One',cursive; font-size:38px; color:var(--orange); margin:0 4px; }
 
-  /* PIE VISUALS */
-  .pie-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; margin: 18px 0; }
-  .pie-wrap { text-align: center; }
-  .pie-label {
-    font-family: 'Fredoka One', cursive;
-    font-size: 26px;
-    margin-top: 8px;
-    color: var(--dark);
-  }
-  .pie-sub { font-size: 12px; color: #999; font-weight: 700; }
+  .eq-box { background:#fffbf0; border:3px dashed var(--yellow); border-radius:18px; padding:16px 20px; text-align:center; margin:12px 0; }
+  .eq { font-family:'Fredoka One',cursive; font-size:clamp(26px,5.5vw,42px); color:var(--dark); display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .frac { display:inline-flex; flex-direction:column; align-items:center; line-height:1.1; }
+  .frac .num { border-bottom:3px solid currentColor; padding-bottom:2px; min-width:26px; text-align:center; }
+  .frac .den { padding-top:2px; min-width:26px; text-align:center; }
 
-  svg.pie { overflow: visible; }
+  .rule-box { display:flex; align-items:flex-start; gap:12px; background:linear-gradient(135deg,#f0fff4,#e8f5fe); border-radius:14px; padding:14px 18px; margin-top:12px; }
+  .rule-icon { font-size:26px; }
+  .rule-text { font-size:14px; color:#444; font-weight:700; line-height:1.6; }
 
-  /* OPERATOR */
-  .op {
-    font-family: 'Fredoka One', cursive;
-    font-size: 40px;
-    color: var(--orange);
-    margin: 0 4px;
-  }
+  .step-row { display:flex; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap; }
+  .step-pill { background:var(--blue); color:#fff; font-family:'Fredoka One',cursive; font-size:13px; padding:4px 14px; border-radius:20px; }
+  .step-pill.green{background:var(--green)} .step-pill.purple{background:var(--purple)} .step-pill.orange{background:var(--orange)}
 
-  /* Equation display */
-  .eq-box {
-    background: #fffbf0;
-    border: 3px dashed var(--yellow);
-    border-radius: 18px;
-    padding: 18px 24px;
-    text-align: center;
-    margin: 14px 0;
-  }
-  .eq {
-    font-family: 'Fredoka One', cursive;
-    font-size: clamp(28px, 6vw, 44px);
-    color: var(--dark);
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .frac {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    line-height: 1.1;
-  }
-  .frac .num { border-bottom: 3px solid currentColor; padding-bottom: 2px; min-width: 28px; text-align: center; }
-  .frac .den { padding-top: 2px; min-width: 28px; text-align: center; }
+  .bar-container { margin:14px 0; }
+  .bar-track { display:flex; height:50px; border-radius:12px; overflow:hidden; border:3px solid #e0e0e0; background:#f5f5f5; }
+  .bar-seg { height:100%; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:13px; color:#fff; transition:width 1.2s cubic-bezier(.34,1.56,.64,1); position:relative; overflow:hidden; }
+  .bar-seg::after { content:''; position:absolute; top:0;left:0;right:0; height:40%; background:rgba(255,255,255,.2); border-radius:0 0 50% 50%; }
 
-  /* Rule box */
-  .rule-box {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    background: linear-gradient(135deg, #f0fff4, #e8f5fe);
-    border-radius: 16px;
-    padding: 16px 20px;
-    margin-top: 14px;
-  }
-  .rule-icon { font-size: 28px; }
-  .rule-text { font-size: 15px; color: #444; font-weight: 700; line-height: 1.6; }
+  .answer-reveal { text-align:center; padding:22px; background:linear-gradient(135deg,#ffe8d6,#fff3cd); border-radius:20px; border:3px solid var(--yellow); margin-top:10px; }
+  .answer-reveal .big { font-family:'Fredoka One',cursive; font-size:clamp(32px,7vw,56px); color:var(--orange); animation:pop .6s ease; }
+  .answer-reveal .msg { font-size:15px; font-weight:800; color:#888; margin-top:4px; }
+  @keyframes pop { 0%{transform:scale(.5);opacity:0} 60%{transform:scale(1.15)} 100%{transform:scale(1);opacity:1} }
 
-  /* Unlike extra steps */
-  .step-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 10px 0;
-    flex-wrap: wrap;
-  }
-  .step-pill {
-    background: var(--blue);
-    color: #fff;
-    font-family: 'Fredoka One', cursive;
-    font-size: 14px;
-    padding: 5px 16px;
-    border-radius: 20px;
-  }
-  .step-pill.green { background: var(--green); }
-  .step-pill.purple { background: var(--purple); }
-  .step-pill.orange { background: var(--orange); }
+  .play-btn { display:block; margin:18px auto 0; background:var(--orange); color:#fff; font-family:'Fredoka One',cursive; font-size:17px; padding:12px 38px; border-radius:50px; border:none; cursor:pointer; box-shadow:0 6px 20px rgba(255,107,53,.4); transition:all .2s; letter-spacing:.5px; }
+  .play-btn:hover { transform:translateY(-3px); }
+  .play-btn:active { transform:scale(.97); }
+  .play-btn.green-btn { background:var(--green); box-shadow:0 6px 20px rgba(107,203,119,.4); }
 
-  /* ANIMATE BAR */
-  .bar-container { margin: 16px 0; }
-  .bar-track {
-    display: flex;
-    height: 52px;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 3px solid #e0e0e0;
-    background: #f5f5f5;
-    position: relative;
-  }
-  .bar-seg {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Fredoka One', cursive;
-    font-size: 14px;
-    color: #fff;
-    transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-    overflow: hidden;
-  }
-  .bar-seg::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 40%;
-    background: rgba(255,255,255,0.2);
-    border-radius: 0 0 50% 50%;
-  }
+  /* ══════ QUIZ ══════ */
+  .quiz-start { text-align:center; background:#fff; border-radius:28px; padding:40px 32px; box-shadow:0 8px 32px rgba(0,0,0,.08); }
+  .quiz-start h2 { font-family:'Fredoka One',cursive; font-size:30px; color:var(--dark); margin-bottom:8px; }
+  .quiz-start p  { color:#999; font-weight:700; font-size:14px; margin-bottom:24px; }
+  .diff-row { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:26px; }
+  .diff-btn { font-family:'Fredoka One',cursive; font-size:15px; padding:11px 24px; border-radius:50px; border:3px solid transparent; cursor:pointer; transition:all .2s; line-height:1.4; }
+  .diff-btn[data-d="easy"]   { background:#e8fff0; color:var(--green);  border-color:var(--green); }
+  .diff-btn[data-d="medium"] { background:#fff5e0; color:var(--orange); border-color:var(--orange); }
+  .diff-btn[data-d="hard"]   { background:#ffeef4; color:var(--red);    border-color:var(--red); }
+  .diff-btn.selected[data-d="easy"]   { background:var(--green);  color:#fff; }
+  .diff-btn.selected[data-d="medium"] { background:var(--orange); color:#fff; }
+  .diff-btn.selected[data-d="hard"]   { background:var(--red);    color:#fff; }
+  .start-quiz-btn { background:var(--orange); color:#fff; font-family:'Fredoka One',cursive; font-size:19px; padding:14px 48px; border-radius:50px; border:none; cursor:pointer; box-shadow:0 8px 24px rgba(255,107,53,.4); transition:all .2s; }
+  .start-quiz-btn:hover { transform:translateY(-3px); }
 
-  /* ANSWER REVEAL */
-  .answer-reveal {
-    text-align: center;
-    padding: 24px;
-    background: linear-gradient(135deg, #ffe8d6, #fff3cd);
-    border-radius: 20px;
-    border: 3px solid var(--yellow);
-    margin-top: 10px;
-  }
-  .answer-reveal .big {
-    font-family: 'Fredoka One', cursive;
-    font-size: clamp(36px, 8vw, 60px);
-    color: var(--orange);
-    animation: pop 0.6s ease;
-  }
-  @keyframes pop {
-    0% { transform: scale(0.5); opacity: 0; }
-    60% { transform: scale(1.15); }
-    100% { transform: scale(1); opacity: 1; }
-  }
-  .answer-reveal .msg { font-size: 16px; font-weight: 800; color: #777; margin-top: 4px; }
+  .quiz-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:8px; }
+  .qnum-badge  { font-family:'Fredoka One',cursive; font-size:14px; background:#fff; border-radius:50px; padding:7px 18px; box-shadow:0 3px 12px rgba(0,0,0,.08); color:#777; }
+  .score-badge { font-family:'Fredoka One',cursive; font-size:14px; background:var(--green); color:#fff; border-radius:50px; padding:7px 18px; box-shadow:0 3px 12px rgba(107,203,119,.35); }
 
-  /* PLAY BUTTON */
-  .play-btn {
-    display: block;
-    margin: 20px auto 0;
-    background: var(--orange);
-    color: #fff;
-    font-family: 'Fredoka One', cursive;
-    font-size: 18px;
-    padding: 13px 40px;
-    border-radius: 50px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 6px 20px rgba(255,107,53,0.4);
-    transition: all 0.2s;
-    letter-spacing: 0.5px;
-  }
-  .play-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(255,107,53,0.45); }
-  .play-btn:active { transform: scale(0.97); }
-  .play-btn.green-btn { background: var(--green); box-shadow: 0 6px 20px rgba(107,203,119,0.4); }
-  .play-btn.green-btn:hover { box-shadow: 0 10px 26px rgba(107,203,119,0.45); }
+  /* TIMER */
+  .timer-wrap { position:relative; width:80px; height:80px; margin:0 auto 16px; }
+  .timer-svg  { width:80px; height:80px; transform:rotate(-90deg); }
+  .timer-bg   { fill:none; stroke:#f0f0f0; stroke-width:8; }
+  .timer-ring { fill:none; stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset .9s linear, stroke .4s; }
+  .timer-num  { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; font-size:26px; color:var(--dark); }
+  .timer-num.urgent { color:var(--red); animation:pulse .6s infinite; }
+  @keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
 
-  /* CONFETTI */
-  .confetti-piece {
-    position: fixed;
-    width: 10px;
-    height: 14px;
-    top: -20px;
-    border-radius: 2px;
-    animation: confettiFall 3s ease-in forwards;
-    pointer-events: none;
-    z-index: 9999;
-  }
-  @keyframes confettiFall {
-    0%   { transform: translateY(0) rotateZ(0deg); opacity: 1; }
-    100% { transform: translateY(110vh) rotateZ(720deg); opacity: 0; }
-  }
+  .q-card { background:#fff; border-radius:24px; padding:26px 22px; box-shadow:0 8px 28px rgba(0,0,0,.08); margin-bottom:18px; text-align:center; border-top:6px solid var(--orange); }
+  .q-type-tag { display:inline-block; font-family:'Fredoka One',cursive; font-size:12px; padding:4px 14px; border-radius:20px; margin-bottom:12px; }
+  .q-type-tag.like-tag   { background:#e8fff0; color:var(--green); }
+  .q-type-tag.unlike-tag { background:#e8f0ff; color:var(--blue); }
 
-  /* Mobile */
-  @media (max-width: 500px) {
-    .step-card { padding: 20px 18px; }
-    .pie-row { gap: 10px; }
-    .op { font-size: 28px; }
-  }
+  .q-equation { font-family:'Fredoka One',cursive; font-size:clamp(34px,8vw,58px); color:var(--dark); display:inline-flex; align-items:center; gap:14px; flex-wrap:wrap; justify-content:center; }
+  .q-frac { display:inline-flex; flex-direction:column; align-items:center; line-height:1; }
+  .q-frac .n { border-bottom:4px solid currentColor; padding-bottom:3px; min-width:34px; text-align:center; }
+  .q-frac .d { padding-top:3px; min-width:34px; text-align:center; }
+  .q-plus { color:var(--orange); }
+  .q-eqsign { color:#aaa; }
+
+  .options-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px; }
+  .opt-btn { font-family:'Fredoka One',cursive; font-size:clamp(18px,5vw,30px); padding:16px 8px; border-radius:18px; border:3px solid #e8e8e8; background:#fafafa; cursor:pointer; transition:all .2s; color:var(--dark); display:flex; align-items:center; justify-content:center; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--orange); background:#fff5f0; transform:translateY(-2px); box-shadow:0 6px 16px rgba(255,107,53,.18); }
+  .opt-btn.correct { background:#e8fff0 !important; border-color:var(--green) !important; color:var(--green) !important; animation:correctPop .4s ease; }
+  .opt-btn.wrong   { background:#fff0f3 !important; border-color:var(--red)   !important; color:var(--red)   !important; animation:shake .4s ease; }
+  @keyframes correctPop { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
+  @keyframes shake { 0%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} 100%{transform:translateX(0)} }
+
+  .feedback { font-family:'Fredoka One',cursive; font-size:20px; min-height:32px; margin-top:12px; text-align:center; }
+  .feedback.ok  { color:var(--green); }
+  .feedback.bad { color:var(--red); }
+
+  .q-explain { background:#f8faff; border-radius:14px; padding:14px 18px; margin-top:12px; font-size:13px; font-weight:700; color:#555; line-height:1.7; display:none; }
+  .q-explain.show { display:block; animation:slideIn .3s ease; }
+
+  .next-btn { background:var(--blue); color:#fff; font-family:'Fredoka One',cursive; font-size:17px; padding:12px 38px; border-radius:50px; border:none; cursor:pointer; margin:16px auto 0; display:none; box-shadow:0 6px 18px rgba(77,150,255,.4); transition:all .2s; }
+  .next-btn.show { display:block; animation:slideIn .3s ease; }
+  .next-btn:hover { transform:translateY(-3px); }
+
+  .progress-wrap { margin-bottom:16px; }
+  .progress-label { display:flex; justify-content:space-between; font-size:12px; font-weight:800; color:#bbb; margin-bottom:5px; }
+  .progress-track { height:10px; background:#ece9e3; border-radius:20px; overflow:hidden; }
+  .progress-fill  { height:100%; background:linear-gradient(90deg,var(--orange),var(--yellow)); border-radius:20px; transition:width .6s cubic-bezier(.34,1.56,.64,1); }
+
+  /* RESULTS */
+  .results-screen { background:#fff; border-radius:28px; padding:38px 26px; text-align:center; box-shadow:0 8px 32px rgba(0,0,0,.08); }
+  .results-screen h2 { font-family:'Fredoka One',cursive; font-size:30px; color:var(--dark); margin-bottom:6px; }
+  .score-circle { width:130px; height:130px; border-radius:50%; margin:18px auto; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:'Fredoka One',cursive; border:8px solid var(--orange); }
+  .score-circle .sc-big { font-size:42px; color:var(--orange); line-height:1; }
+  .score-circle .sc-tot { font-size:16px; color:#ccc; }
+  .medal { font-size:60px; margin:8px 0; animation:pop .6s ease; }
+  .result-msg { font-size:16px; font-weight:800; color:#888; margin-bottom:22px; }
+  .replay-btn { background:var(--orange); color:#fff; font-family:'Fredoka One',cursive; font-size:17px; padding:12px 38px; border-radius:50px; border:none; cursor:pointer; box-shadow:0 6px 20px rgba(255,107,53,.4); transition:all .2s; }
+  .replay-btn:hover { transform:translateY(-3px); }
+
+  .breakdown { text-align:left; margin-top:22px; }
+  .breakdown h3 { font-family:'Fredoka One',cursive; font-size:17px; color:var(--dark); margin-bottom:10px; }
+  .bd-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:12px; margin-bottom:7px; font-weight:700; font-size:13px; }
+  .bd-item.bd-ok  { background:#e8fff0; color:#3a7d44; }
+  .bd-item.bd-bad { background:#fff0f3; color:#c0392b; }
+
+  .confetti-piece { position:fixed; width:10px; height:14px; top:-20px; border-radius:2px; animation:confettiFall 3s ease-in forwards; pointer-events:none; z-index:9999; }
+  @keyframes confettiFall { 0%{transform:translateY(0) rotateZ(0deg);opacity:1} 100%{transform:translateY(110vh) rotateZ(720deg);opacity:0} }
+
+  @media(max-width:500px){ .step-card{padding:18px 16px} .options-grid{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
 
-<!-- Floating bubbles -->
 <div class="bubbles" id="bubbles"></div>
 
 <div class="wrapper">
   <header>
-    <div class="badge">📐 YEAR 3 MATHS</div>
+    <div class="badge">📐 Year 4 MATHS</div>
     <h1>Adding <span>Fractions</span> 🍕</h1>
-    <p class="subtitle">Tap a tab to start learning — it's easy and fun!</p>
+    <p class="subtitle">Learn it · Watch it · Test it — 14 shuffled questions with a timer!</p>
   </header>
 
-  <!-- TABS -->
   <div class="tabs">
-    <div class="tab active-like" onclick="showLesson('like')">🟢 Like Denominators</div>
-    <div class="tab" onclick="showLesson('unlike')">🔵 Unlike Denominators</div>
+    <div class="tab t-like"   onclick="showTab('like')">🟢 Like Denominators</div>
+    <div class="tab"          onclick="showTab('unlike')">🔵 Unlike Denominators</div>
+    <div class="tab"          onclick="showTab('quiz')">🏆 Quiz Time!</div>
   </div>
 
-  <!-- ===== LIKE DENOMINATORS ===== -->
+  <!-- ═══ LIKE ═══ -->
   <div class="lesson active" id="like">
-
     <div class="step-card">
       <div class="step-num">What it means</div>
       <div class="step-title">🟢 LIKE Denominators = Same bottom number!</div>
-      <div class="rule-box">
-        <div class="rule-icon">💡</div>
-        <div class="rule-text">
-          When the <b>bottom numbers are the same</b>, just <b>add the top numbers</b>.<br>
-          The bottom number <b>stays the same</b>. Easy!
-        </div>
-      </div>
+      <div class="rule-box"><div class="rule-icon">💡</div><div class="rule-text">When the <b>bottom numbers are the same</b>, just <b>add the top numbers</b>. The bottom stays!</div></div>
     </div>
-
     <div class="step-card yellow-border">
-      <div class="step-num">Example</div>
+      <div class="step-num">Animated Example</div>
       <div class="step-title">🍕 Let's add: ²⁄₅ + ¹⁄₅</div>
-      <p style="color:#888;font-weight:700;font-size:14px;margin-bottom:4px;">Think of a pizza cut into 5 equal slices!</p>
-
-      <!-- PIE CHARTS -->
-      <div class="pie-row" id="like-pies">
-        <!-- JS will fill in -->
-      </div>
-
-      <div class="eq-box" id="like-eq" style="opacity:0;transition:opacity 0.6s">
+      <p style="color:#999;font-weight:700;font-size:13px;margin-bottom:4px">Pizza cut into 5 equal slices!</p>
+      <div class="pie-row" id="like-pies"></div>
+      <div class="eq-box" id="like-eq" style="opacity:0;transition:opacity .6s">
         <div class="eq">
           <span class="frac" style="color:var(--orange)"><span class="num">2</span><span class="den">5</span></span>
           <span style="color:#555">+</span>
@@ -354,388 +209,495 @@
           <span class="frac" style="color:var(--blue)"><span class="num" id="like-ans-num">?</span><span class="den">5</span></span>
         </div>
       </div>
-
-      <!-- BAR -->
       <div class="bar-container">
-        <p style="font-weight:800;font-size:13px;color:#aaa;margin-bottom:6px;">FRACTION BAR (out of 5 slices)</p>
+        <p style="font-weight:800;font-size:12px;color:#bbb;margin-bottom:5px">FRACTION BAR (out of 5 slices)</p>
         <div class="bar-track">
           <div class="bar-seg" id="bar-a" style="width:0%;background:var(--orange)"></div>
           <div class="bar-seg" id="bar-b" style="width:0%;background:var(--green)"></div>
-          <div class="bar-seg" id="bar-c" style="width:0%;background:#e8e8e8;color:#bbb"></div>
+          <div class="bar-seg" id="bar-c" style="width:100%;background:#ebebeb;color:#ccc"></div>
         </div>
       </div>
-
       <div id="like-answer" style="display:none">
         <div class="answer-reveal">
           <div class="big">²⁄₅ + ¹⁄₅ = <span style="color:var(--blue)">³⁄₅</span> 🎉</div>
-          <div class="msg">We added 2 + 1 = 3 slices. The bottom stays 5!</div>
+          <div class="msg">We added 2 + 1 = 3 slices. Bottom stays 5!</div>
         </div>
       </div>
-
       <button class="play-btn green-btn" id="like-btn" onclick="animateLike()">▶ Show Me!</button>
     </div>
-
     <div class="step-card">
-      <div class="step-num">The Simple Rule</div>
-      <div class="step-title">📝 Formula</div>
+      <div class="step-num">Formula</div>
+      <div class="step-title">📝 The Rule</div>
       <div class="eq-box">
-        <div class="eq" style="font-size:clamp(18px,4vw,28px)">
+        <div class="eq" style="font-size:clamp(17px,4vw,26px)">
           <span class="frac" style="color:var(--orange)"><span class="num">a</span><span class="den">n</span></span>
           <span style="color:#555">+</span>
           <span class="frac" style="color:var(--green)"><span class="num">b</span><span class="den">n</span></span>
           <span style="color:#555">=</span>
-          <span class="frac" style="color:var(--blue)"><span class="num">a + b</span><span class="den">n</span></span>
+          <span class="frac" style="color:var(--blue)"><span class="num">a+b</span><span class="den">n</span></span>
         </div>
       </div>
-      <div class="rule-box">
-        <div class="rule-icon">✏️</div>
-        <div class="rule-text">Add only the <b>numerators (top)</b>.<br>Keep the <b>denominator (bottom) the same</b>.</div>
-      </div>
+      <div class="rule-box"><div class="rule-icon">✏️</div><div class="rule-text">Add only the <b>numerators (top)</b>. Keep the <b>denominator (bottom) the same</b>.</div></div>
     </div>
+  </div>
 
-  </div><!-- /like -->
-
-  <!-- ===== UNLIKE DENOMINATORS ===== -->
+  <!-- ═══ UNLIKE ═══ -->
   <div class="lesson" id="unlike">
-
     <div class="step-card blue-border">
       <div class="step-num">What it means</div>
       <div class="step-title">🔵 UNLIKE Denominators = Different bottom numbers!</div>
-      <div class="rule-box">
-        <div class="rule-icon">💡</div>
-        <div class="rule-text">
-          When the <b>bottom numbers are different</b>, we must make them <b>the same first</b>.<br>
-          We find the <b>LCM</b> (Lowest Common Multiple) and convert both fractions.
-        </div>
-      </div>
+      <div class="rule-box"><div class="rule-icon">💡</div><div class="rule-text">Make the bottom numbers <b>the same first</b> using the <b>LCM</b>, then add.</div></div>
     </div>
-
     <div class="step-card blue-border">
-      <div class="step-num">Example</div>
+      <div class="step-num">Animated Example</div>
       <div class="step-title">🍫 Let's add: ¹⁄₂ + ¹⁄₃</div>
-
-      <!-- STEP 1: Show fractions -->
-      <div class="step-row" id="u-step1" style="opacity:0;transition:opacity 0.5s">
-        <div class="step-pill">Step 1</div>
-        <span style="font-weight:800;color:#555;font-size:15px">Write the fractions: <b style="color:var(--blue)">¹⁄₂</b> and <b style="color:var(--purple)">¹⁄₃</b></span>
-      </div>
-
-      <!-- PIE section -->
-      <div class="pie-row" id="unlike-pies" style="margin-top:10px"></div>
-
-      <!-- STEP 2: LCM -->
-      <div class="step-row" id="u-step2" style="opacity:0;transition:opacity 0.5s;margin-top:10px">
-        <div class="step-pill green">Step 2</div>
-        <span style="font-weight:800;color:#555;font-size:15px">Find LCM of 2 and 3 → <b style="color:var(--green)">LCM = 6</b></span>
-      </div>
-      <div id="u-lcm-box" style="opacity:0;transition:opacity 0.5s">
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
-          <div style="background:#f0fff4;border:2px solid var(--green);border-radius:12px;padding:8px 16px;font-weight:800;font-size:14px;color:#444">Multiples of 2: <span style="color:var(--blue)">2, 4, <u>6</u>, 8…</span></div>
-          <div style="background:#f0f5ff;border:2px solid var(--blue);border-radius:12px;padding:8px 16px;font-weight:800;font-size:14px;color:#444">Multiples of 3: <span style="color:var(--purple)">3, <u>6</u>, 9…</span></div>
+      <div class="pie-row" id="unlike-pies"></div>
+      <div class="step-row" id="u-step1" style="opacity:0;transition:opacity .5s"><div class="step-pill">Step 1</div><span style="font-weight:800;color:#555;font-size:14px">Write the fractions: <b style="color:var(--blue)">¹⁄₂</b> and <b style="color:var(--purple)">¹⁄₃</b></span></div>
+      <div class="step-row" id="u-step2" style="opacity:0;transition:opacity .5s;margin-top:8px"><div class="step-pill green">Step 2</div><span style="font-weight:800;color:#555;font-size:14px">Find LCM of 2 and 3 → <b style="color:var(--green)">LCM = 6</b></span></div>
+      <div id="u-lcm-box" style="opacity:0;transition:opacity .5s">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0">
+          <div style="background:#f0fff4;border:2px solid var(--green);border-radius:12px;padding:7px 14px;font-weight:800;font-size:13px;color:#444">Multiples of 2: <span style="color:var(--blue)">2, 4, <u>6</u>, 8…</span></div>
+          <div style="background:#f0f5ff;border:2px solid var(--blue);border-radius:12px;padding:7px 14px;font-weight:800;font-size:13px;color:#444">Multiples of 3: <span style="color:var(--purple)">3, <u>6</u>, 9…</span></div>
         </div>
       </div>
-
-      <!-- STEP 3: Convert -->
-      <div class="step-row" id="u-step3" style="opacity:0;transition:opacity 0.5s;margin-top:10px">
-        <div class="step-pill purple">Step 3</div>
-        <span style="font-weight:800;color:#555;font-size:15px">Convert both to sixths</span>
-      </div>
-      <div id="u-convert-box" style="opacity:0;transition:opacity 0.5s">
-        <div class="eq-box" style="margin:10px 0">
-          <div class="eq" style="font-size:clamp(16px,3.5vw,24px);gap:8px">
+      <div class="step-row" id="u-step3" style="opacity:0;transition:opacity .5s;margin-top:8px"><div class="step-pill purple">Step 3</div><span style="font-weight:800;color:#555;font-size:14px">Convert both to sixths</span></div>
+      <div id="u-convert-box" style="opacity:0;transition:opacity .5s">
+        <div class="eq-box" style="margin:8px 0">
+          <div class="eq" style="font-size:clamp(15px,3.5vw,22px);gap:7px">
             <span class="frac" style="color:var(--blue)"><span class="num">1</span><span class="den">2</span></span>
-            <span style="color:#aaa;font-size:16px">×</span>
-            <span class="frac" style="color:#aaa;font-size:20px"><span class="num">3</span><span class="den">3</span></span>
+            <span style="color:#aaa;font-size:14px">×</span>
+            <span class="frac" style="color:#aaa;font-size:18px"><span class="num">3</span><span class="den">3</span></span>
             <span style="color:#555">=</span>
             <span class="frac" style="color:var(--blue)"><span class="num">3</span><span class="den">6</span></span>
-            <span style="color:#ddd;margin:0 6px">|</span>
+            <span style="color:#ddd;margin:0 5px">|</span>
             <span class="frac" style="color:var(--purple)"><span class="num">1</span><span class="den">3</span></span>
-            <span style="color:#aaa;font-size:16px">×</span>
-            <span class="frac" style="color:#aaa;font-size:20px"><span class="num">2</span><span class="den">2</span></span>
+            <span style="color:#aaa;font-size:14px">×</span>
+            <span class="frac" style="color:#aaa;font-size:18px"><span class="num">2</span><span class="den">2</span></span>
             <span style="color:#555">=</span>
             <span class="frac" style="color:var(--purple)"><span class="num">2</span><span class="den">6</span></span>
           </div>
         </div>
       </div>
-
-      <!-- STEP 4: Add -->
-      <div class="step-row" id="u-step4" style="opacity:0;transition:opacity 0.5s;margin-top:10px">
-        <div class="step-pill orange">Step 4</div>
-        <span style="font-weight:800;color:#555;font-size:15px">Now add! Same denominator ✅</span>
-      </div>
-      <div id="u-add-box" style="opacity:0;transition:opacity 0.5s">
+      <div class="step-row" id="u-step4" style="opacity:0;transition:opacity .5s;margin-top:8px"><div class="step-pill orange">Step 4</div><span style="font-weight:800;color:#555;font-size:14px">Now add! Same denominator ✅</span></div>
+      <div id="u-add-box" style="opacity:0;transition:opacity .5s">
         <div class="eq-box">
           <div class="eq">
             <span class="frac" style="color:var(--blue)"><span class="num">3</span><span class="den">6</span></span>
             <span style="color:#555">+</span>
             <span class="frac" style="color:var(--purple)"><span class="num">2</span><span class="den">6</span></span>
             <span style="color:#555">=</span>
-            <span class="frac" style="color:var(--orange)" id="unlike-ans">?</span>
+            <span id="u-ans-hold" class="frac" style="color:var(--orange)"><span class="num">?</span><span class="den">6</span></span>
           </div>
         </div>
-
-        <!-- BAR -->
         <div class="bar-container">
-          <p style="font-weight:800;font-size:13px;color:#aaa;margin-bottom:6px;">FRACTION BAR (out of 6 equal parts)</p>
+          <p style="font-weight:800;font-size:12px;color:#bbb;margin-bottom:5px">FRACTION BAR (out of 6 parts)</p>
           <div class="bar-track">
             <div class="bar-seg" id="ubar-a" style="width:0%;background:var(--blue)"></div>
             <div class="bar-seg" id="ubar-b" style="width:0%;background:var(--purple)"></div>
-            <div class="bar-seg" id="ubar-c" style="width:0%;background:#e8e8e8;color:#ccc"></div>
+            <div class="bar-seg" id="ubar-c" style="width:100%;background:#ebebeb;color:#ccc"></div>
           </div>
         </div>
       </div>
-
       <div id="unlike-answer" style="display:none">
         <div class="answer-reveal">
           <div class="big">¹⁄₂ + ¹⁄₃ = <span style="color:var(--orange)">⁵⁄₆</span> 🎉</div>
-          <div class="msg">3 + 2 = 5 sixths. That's ⁵⁄₆!</div>
+          <div class="msg">3 + 2 = 5 sixths → ⁵⁄₆!</div>
         </div>
       </div>
-
       <button class="play-btn" id="unlike-btn" onclick="animateUnlike()">▶ Show Me!</button>
     </div>
-
     <div class="step-card purple-border">
-      <div class="step-num">The Simple Rule</div>
-      <div class="step-title">📝 Steps to Remember</div>
+      <div class="step-num">Steps to Remember</div>
+      <div class="step-title">📝 The Rules</div>
       <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
-        <div class="rule-box">
-          <div class="rule-icon">1️⃣</div>
-          <div class="rule-text">Find the <b>LCM</b> of both denominators</div>
+        <div class="rule-box"><div class="rule-icon">1️⃣</div><div class="rule-text">Find the <b>LCM</b> of both denominators</div></div>
+        <div class="rule-box"><div class="rule-icon">2️⃣</div><div class="rule-text"><b>Convert</b> both fractions to the same denominator</div></div>
+        <div class="rule-box"><div class="rule-icon">3️⃣</div><div class="rule-text"><b>Add the numerators</b> — keep the new denominator!</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ QUIZ ═══ -->
+  <div class="lesson" id="quiz">
+
+    <div id="quiz-start">
+      <div class="quiz-start">
+        <h2>🏆 Quiz Time!</h2>
+        <p>14 shuffled questions · Like &amp; Unlike denominators · Beat the clock!</p>
+        <div class="diff-row">
+          <button class="diff-btn selected" data-d="easy"   onclick="selectDiff(this)">🟢 Easy<br><small style="font-size:12px;opacity:.8">30 seconds</small></button>
+          <button class="diff-btn"          data-d="medium" onclick="selectDiff(this)">🟡 Medium<br><small style="font-size:12px;opacity:.8">20 seconds</small></button>
+          <button class="diff-btn"          data-d="hard"   onclick="selectDiff(this)">🔴 Hard<br><small style="font-size:12px;opacity:.8">10 seconds</small></button>
         </div>
-        <div class="rule-box">
-          <div class="rule-icon">2️⃣</div>
-          <div class="rule-text"><b>Convert</b> both fractions to the same denominator</div>
-        </div>
-        <div class="rule-box">
-          <div class="rule-icon">3️⃣</div>
-          <div class="rule-text"><b>Add the numerators</b> — keep the new denominator!</div>
-        </div>
+        <button class="start-quiz-btn" onclick="startQuiz()">🚀 Start Quiz!</button>
       </div>
     </div>
 
-  </div><!-- /unlike -->
-</div><!-- /wrapper -->
+    <div id="quiz-active" style="display:none">
+      <div class="quiz-hdr">
+        <div class="qnum-badge">Question <span id="q-current">1</span> of 14</div>
+        <div class="score-badge">⭐ <span id="q-score">0</span> pts</div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-label"><span>Progress</span><span id="prog-pct">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      </div>
+      <div class="timer-wrap">
+        <svg class="timer-svg" viewBox="0 0 80 80">
+          <circle class="timer-bg" cx="40" cy="40" r="34"/>
+          <circle class="timer-ring" id="timer-ring" cx="40" cy="40" r="34"
+            stroke="var(--orange)" stroke-dasharray="213.6" stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-num" id="timer-num">30</div>
+      </div>
+      <div class="q-card">
+        <div class="q-type-tag like-tag" id="q-type-tag">Like Denominators</div>
+        <div class="q-equation" id="q-equation"></div>
+        <div class="options-grid" id="options-grid"></div>
+        <div class="feedback" id="q-feedback"></div>
+        <div class="q-explain" id="q-explain"></div>
+      </div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next Question ➜</button>
+    </div>
+
+    <div id="quiz-results" style="display:none">
+      <div class="results-screen">
+        <h2>Quiz Complete! 🎓</h2>
+        <div class="medal" id="result-medal">🥇</div>
+        <div class="score-circle">
+          <div class="sc-big" id="res-score">0</div>
+          <div class="sc-tot">/ 14</div>
+        </div>
+        <div class="result-msg" id="result-msg"></div>
+        <button class="replay-btn" onclick="resetQuiz()">🔄 Play Again</button>
+        <div class="breakdown" id="breakdown"></div>
+      </div>
+    </div>
+
+  </div><!-- /quiz -->
+</div>
 
 <script>
-// ── Bubbles ──────────────────────────────────────────────
-const bubbleColors = ['#FFD93D','#FF6B35','#6BCB77','#4D96FF','#C77DFF','#FF4D6D'];
+// ── Bubbles
 const bc = document.getElementById('bubbles');
-for(let i=0;i<18;i++){
-  const b = document.createElement('div');
-  b.className='bubble';
-  const size = 30+Math.random()*90;
-  b.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${bubbleColors[i%6]};animation-duration:${8+Math.random()*14}s;animation-delay:${Math.random()*-14}s;`;
-  bc.appendChild(b);
-}
+['#FFD93D','#FF6B35','#6BCB77','#4D96FF','#C77DFF','#FF4D6D'].forEach(c => {
+  for(let j=0;j<3;j++){
+    const b = document.createElement('div'); b.className='bubble';
+    const s = 30+Math.random()*90;
+    b.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${c};animation-duration:${8+Math.random()*14}s;animation-delay:${Math.random()*-14}s`;
+    bc.appendChild(b);
+  }
+});
 
-// ── Tabs ──────────────────────────────────────────────────
-function showLesson(id){
+// ── Tabs
+function showTab(id){
   document.querySelectorAll('.lesson').forEach(l=>l.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>{ t.className='tab'; });
   document.getElementById(id).classList.add('active');
   const tabs = document.querySelectorAll('.tab');
-  if(id==='like'){ tabs[0].classList.add('active-like'); }
-  else { tabs[1].classList.add('active-unlike'); }
-  // reset animations
-  resetLike(); resetUnlike();
+  if(id==='like')   tabs[0].classList.add('t-like');
+  if(id==='unlike') tabs[1].classList.add('t-unlike');
+  if(id==='quiz')   tabs[2].classList.add('t-quiz');
+  if(id!=='quiz'){ resetLike(); resetUnlike(); }
 }
 
-// ── SVG PIE HELPER ────────────────────────────────────────
-function makePie(slices, total, colors, label, sub){
-  const r=52, cx=60, cy=60;
-  const anglePerSlice = 360/total;
-  let paths='';
-  for(let i=0;i<slices;i++){
-    const startA=(i*anglePerSlice-90)*(Math.PI/180);
-    const endA=((i+1)*anglePerSlice-90)*(Math.PI/180);
-    const x1=cx+r*Math.cos(startA), y1=cy+r*Math.sin(startA);
-    const x2=cx+r*Math.cos(endA),   y2=cy+r*Math.sin(endA);
-    const large=anglePerSlice>180?1:0;
-    paths+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} Z" fill="${colors[i]}" stroke="white" stroke-width="2"/>`;
+// ── Pie helper
+function makePie(slices, total, color, label, sub){
+  const r=50, cx=60, cy=60, a=360/total;
+  let p='';
+  for(let i=0;i<total;i++){
+    const s=(i*a-90)*Math.PI/180, e=((i+1)*a-90)*Math.PI/180;
+    const x1=cx+r*Math.cos(s), y1=cy+r*Math.sin(s), x2=cx+r*Math.cos(e), y2=cy+r*Math.sin(e);
+    p+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z" fill="${i<slices?color:'#f0f0f0'}" stroke="white" stroke-width="2"/>`;
   }
-  // empty slices
-  for(let i=slices;i<total;i++){
-    const startA=(i*anglePerSlice-90)*(Math.PI/180);
-    const endA=((i+1)*anglePerSlice-90)*(Math.PI/180);
-    const x1=cx+r*Math.cos(startA), y1=cy+r*Math.sin(startA);
-    const x2=cx+r*Math.cos(endA),   y2=cy+r*Math.sin(endA);
-    const large=anglePerSlice>180?1:0;
-    paths+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} Z" fill="#f0f0f0" stroke="white" stroke-width="2"/>`;
-  }
-  const wrap=document.createElement('div');
-  wrap.className='pie-wrap';
-  wrap.innerHTML=`<svg class="pie" width="120" height="120" viewBox="0 0 120 120">${paths}<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#ddd" stroke-width="2"/></svg><div class="pie-label">${label}</div><div class="pie-sub">${sub}</div>`;
-  return wrap;
+  const w=document.createElement('div'); w.className='pie-wrap';
+  w.innerHTML=`<svg width="120" height="120" viewBox="0 0 120 120">${p}<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#e0e0e0" stroke-width="2"/></svg><div class="pie-label">${label}</div><div class="pie-sub">${sub}</div>`;
+  return w;
 }
 
-// ── LIKE – Setup ─────────────────────────────────────────
+// ── Like animation
 function buildLikePies(){
-  const c=document.getElementById('like-pies');
-  c.innerHTML='';
-  // 2/5 orange
-  const oranges=Array(2).fill('var(--orange)');
-  c.appendChild(makePie(2,5,oranges,'²⁄₅','2 out of 5 slices'));
-  const opEl=document.createElement('div'); opEl.className='op'; opEl.textContent='+'; c.appendChild(opEl);
-  // 1/5 green
-  const greens=Array(1).fill('var(--green)');
-  c.appendChild(makePie(1,5,greens,'¹⁄₅','1 out of 5 slices'));
-  const eqEl=document.createElement('div'); eqEl.className='op'; eqEl.textContent='='; c.appendChild(eqEl);
-  // result placeholder
-  const rWrap=document.createElement('div'); rWrap.className='pie-wrap'; rWrap.id='like-result-pie';
-  rWrap.innerHTML=`<svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="#f5f5f5" stroke="#ddd" stroke-width="2"/><text x="60" y="66" text-anchor="middle" font-family="Fredoka One" font-size="22" fill="#ccc">?</text></svg><div class="pie-label" style="color:#ccc">?</div><div class="pie-sub">your answer</div>`;
-  c.appendChild(rWrap);
+  const c=document.getElementById('like-pies'); c.innerHTML='';
+  c.appendChild(makePie(2,5,'var(--orange)','²⁄₅','2 out of 5'));
+  const op=document.createElement('div'); op.className='op'; op.textContent='+'; c.appendChild(op);
+  c.appendChild(makePie(1,5,'var(--green)','¹⁄₅','1 out of 5'));
+  const eq=document.createElement('div'); eq.className='op'; eq.textContent='='; c.appendChild(eq);
+  const rw=document.createElement('div'); rw.className='pie-wrap'; rw.id='like-result-pie';
+  rw.innerHTML=`<svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="2"/><text x="60" y="66" text-anchor="middle" font-family="Fredoka One" font-size="22" fill="#ccc">?</text></svg><div class="pie-label" style="color:#ccc">?</div><div class="pie-sub">answer</div>`;
+  c.appendChild(rw);
 }
-
 let likeAnimated=false;
 function resetLike(){
-  likeAnimated=false;
-  buildLikePies();
+  likeAnimated=false; buildLikePies();
   document.getElementById('like-eq').style.opacity='0';
   document.getElementById('like-ans-num').textContent='?';
   document.getElementById('bar-a').style.width='0%';
   document.getElementById('bar-b').style.width='0%';
   document.getElementById('bar-c').style.width='100%';
   document.getElementById('like-answer').style.display='none';
-  document.getElementById('like-btn').textContent='▶ Show Me!';
-  document.getElementById('like-btn').disabled=false;
+  const btn=document.getElementById('like-btn'); btn.textContent='▶ Show Me!'; btn.disabled=false; btn.onclick=animateLike;
 }
-
 function animateLike(){
-  if(likeAnimated) return;
-  likeAnimated=true;
+  if(likeAnimated) return; likeAnimated=true;
   document.getElementById('like-btn').disabled=true;
-
-  // Show equation
-  setTimeout(()=>{ document.getElementById('like-eq').style.opacity='1'; },300);
-
-  // Animate bars
+  setTimeout(()=>document.getElementById('like-eq').style.opacity='1', 400);
+  setTimeout(()=>{ document.getElementById('bar-a').style.width='40%'; document.getElementById('bar-b').style.width='20%'; document.getElementById('bar-c').style.width='40%'; }, 800);
+  setTimeout(()=>document.getElementById('like-ans-num').textContent='3', 1900);
   setTimeout(()=>{
-    document.getElementById('bar-a').style.width='40%';
-    document.getElementById('bar-b').style.width='20%';
-    document.getElementById('bar-c').style.width='40%';
-  },700);
-
-  // Reveal answer number
-  setTimeout(()=>{
-    document.getElementById('like-ans-num').textContent='3';
-  },1800);
-
-  // Result pie
-  setTimeout(()=>{
-    const c=document.getElementById('like-result-pie');
-    const colors=['var(--orange)','var(--orange)','var(--blue)'];
-    const r=52,cx=60,cy=60,total=5;
-    const a=360/total;
-    let paths='';
-    for(let i=0;i<3;i++){
-      const s=(i*a-90)*(Math.PI/180), e=((i+1)*a-90)*(Math.PI/180);
-      const x1=cx+r*Math.cos(s),y1=cy+r*Math.sin(s),x2=cx+r*Math.cos(e),y2=cy+r*Math.sin(e);
-      paths+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z" fill="${colors[i]}" stroke="white" stroke-width="2"/>`;
+    const c=document.getElementById('like-result-pie'), r=50, cx=60, cy=60, total=5, a=360/total;
+    const cols=['var(--orange)','var(--orange)','var(--blue)'];
+    let p='';
+    for(let i=0;i<5;i++){
+      const s=(i*a-90)*Math.PI/180, e=((i+1)*a-90)*Math.PI/180;
+      const x1=cx+r*Math.cos(s), y1=cy+r*Math.sin(s), x2=cx+r*Math.cos(e), y2=cy+r*Math.sin(e);
+      p+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z" fill="${i<3?cols[i]:'#f0f0f0'}" stroke="white" stroke-width="2"/>`;
     }
-    for(let i=3;i<5;i++){
-      const s=(i*a-90)*(Math.PI/180), e=((i+1)*a-90)*(Math.PI/180);
-      const x1=cx+r*Math.cos(s),y1=cy+r*Math.sin(s),x2=cx+r*Math.cos(e),y2=cy+r*Math.sin(e);
-      paths+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z" fill="#f0f0f0" stroke="white" stroke-width="2"/>`;
-    }
-    c.innerHTML=`<svg width="120" height="120" viewBox="0 0 120 120" style="animation:pop 0.5s ease">${paths}<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#ddd" stroke-width="2"/></svg><div class="pie-label" style="color:var(--blue)">³⁄₅</div><div class="pie-sub">3 out of 5</div>`;
-  },2000);
-
-  // Big answer
+    c.innerHTML=`<svg width="120" height="120" viewBox="0 0 120 120" style="animation:pop .5s ease">${p}<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#e0e0e0" stroke-width="2"/></svg><div class="pie-label" style="color:var(--blue)">³⁄₅</div><div class="pie-sub">3 out of 5</div>`;
+  }, 2100);
   setTimeout(()=>{
-    document.getElementById('like-answer').style.display='block';
-    launchConfetti();
-    document.getElementById('like-btn').textContent='🔄 Replay';
-    document.getElementById('like-btn').disabled=false;
-    document.getElementById('like-btn').onclick=()=>{ resetLike(); setTimeout(animateLike,100); };
-  },2500);
+    document.getElementById('like-answer').style.display='block'; launchConfetti(30);
+    const btn=document.getElementById('like-btn'); btn.textContent='🔄 Replay'; btn.disabled=false;
+    btn.onclick=()=>{ resetLike(); setTimeout(animateLike,100); };
+  }, 2600);
 }
 
-// ── UNLIKE – Setup ────────────────────────────────────────
+// ── Unlike animation
 function buildUnlikePies(){
-  const c=document.getElementById('unlike-pies');
-  c.innerHTML='';
-  c.appendChild(makePie(1,2,['var(--blue)'],'¹⁄₂','1 out of 2 parts'));
+  const c=document.getElementById('unlike-pies'); c.innerHTML='';
+  c.appendChild(makePie(1,2,'var(--blue)','¹⁄₂','1 of 2'));
   const op=document.createElement('div'); op.className='op'; op.textContent='+'; c.appendChild(op);
-  c.appendChild(makePie(1,3,['var(--purple)'],'¹⁄₃','1 out of 3 parts'));
+  c.appendChild(makePie(1,3,'var(--purple)','¹⁄₃','1 of 3'));
 }
-
-let unlikeStep=0;
+let unlikeAnimated=false;
 function resetUnlike(){
-  unlikeStep=0;
-  buildUnlikePies();
-  ['u-step1','u-step2','u-lcm-box','u-step3','u-convert-box','u-step4','u-add-box'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.style.opacity='0';
-  });
+  unlikeAnimated=false; buildUnlikePies();
+  ['u-step1','u-step2','u-lcm-box','u-step3','u-convert-box','u-step4','u-add-box'].forEach(id=>{ const e=document.getElementById(id); if(e) e.style.opacity='0'; });
   document.getElementById('unlike-answer').style.display='none';
-  const uans=document.getElementById('unlike-ans');
-  if(uans) uans.innerHTML='<span class="num">?</span><span class="den">6</span>';
-  const btn=document.getElementById('unlike-btn');
-  btn.textContent='▶ Show Me!';
-  btn.disabled=false;
-  btn.onclick=animateUnlike;
-  ['ubar-a','ubar-b','ubar-c'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){ el.style.width=id==='ubar-c'?'100%':'0%'; }
+  const ah=document.getElementById('u-ans-hold'); if(ah) ah.innerHTML='<span class="num">?</span><span class="den">6</span>';
+  document.getElementById('ubar-a').style.width='0%';
+  document.getElementById('ubar-b').style.width='0%';
+  document.getElementById('ubar-c').style.width='100%';
+  const btn=document.getElementById('unlike-btn'); btn.textContent='▶ Show Me!'; btn.disabled=false; btn.onclick=animateUnlike;
+}
+function animateUnlike(){
+  if(unlikeAnimated) return; unlikeAnimated=true;
+  document.getElementById('unlike-btn').disabled=true;
+  const show=(id,d)=>setTimeout(()=>{ const e=document.getElementById(id); if(e) e.style.opacity='1'; }, d);
+  show('u-step1',300); show('u-step2',1300); show('u-lcm-box',1700); show('u-step3',2700); show('u-convert-box',3100); show('u-step4',4300); show('u-add-box',4700);
+  setTimeout(()=>{ document.getElementById('ubar-a').style.width='50%'; document.getElementById('ubar-b').style.width='33.33%'; document.getElementById('ubar-c').style.width='16.67%'; }, 4900);
+  setTimeout(()=>document.getElementById('u-ans-hold').innerHTML='<span class="num">5</span><span class="den">6</span>', 5900);
+  setTimeout(()=>{
+    document.getElementById('unlike-answer').style.display='block'; launchConfetti(30);
+    const btn=document.getElementById('unlike-btn'); btn.textContent='🔄 Replay'; btn.disabled=false;
+    btn.onclick=()=>{ resetUnlike(); setTimeout(animateUnlike,100); };
+  }, 6500);
+}
+
+// ══════════════════════════════════════════
+//              QUIZ ENGINE
+// ══════════════════════════════════════════
+
+const ALL_QUESTIONS = [
+  // LIKE DENOMINATORS (7)
+  { type:'like', a1:1,b1:4, a2:2,b2:4, ans:'3/4',  opts:['3/4','2/4','1/2','4/4'],  explain:'1+2=3, keep denominator 4 → ³⁄₄' },
+  { type:'like', a1:2,b1:6, a2:3,b2:6, ans:'5/6',  opts:['5/6','4/6','1/6','6/6'],  explain:'2+3=5, keep denominator 6 → ⁵⁄₆' },
+  { type:'like', a1:1,b1:5, a2:3,b2:5, ans:'4/5',  opts:['4/5','2/5','5/5','3/5'],  explain:'1+3=4, keep denominator 5 → ⁴⁄₅' },
+  { type:'like', a1:3,b1:8, a2:2,b2:8, ans:'5/8',  opts:['5/8','6/8','4/8','3/8'],  explain:'3+2=5, keep denominator 8 → ⁵⁄₈' },
+  { type:'like', a1:1,b1:3, a2:1,b2:3, ans:'2/3',  opts:['2/3','1/3','3/3','1/6'],  explain:'1+1=2, keep denominator 3 → ²⁄₃' },
+  { type:'like', a1:2,b1:7, a2:4,b2:7, ans:'6/7',  opts:['6/7','5/7','7/7','3/7'],  explain:'2+4=6, keep denominator 7 → ⁶⁄₇' },
+  { type:'like', a1:1,b1:9, a2:5,b2:9, ans:'6/9',  opts:['6/9','4/9','7/9','5/9'],  explain:'1+5=6, keep denominator 9 → ⁶⁄₉ (= ²⁄₃)' },
+  // UNLIKE DENOMINATORS (7)
+  { type:'unlike', a1:1,b1:2, a2:1,b2:4, ans:'3/4',  opts:['3/4','2/4','1/4','1/2'],   explain:'LCM(2,4)=4 → ¹⁄₂=²⁄₄ → 2+1=3 → ³⁄₄' },
+  { type:'unlike', a1:1,b1:3, a2:1,b2:6, ans:'3/6',  opts:['3/6','2/6','4/6','1/3'],   explain:'LCM(3,6)=6 → ¹⁄₃=²⁄₆ → 2+1=3 → ³⁄₆ (= ¹⁄₂)' },
+  { type:'unlike', a1:1,b1:2, a2:1,b2:3, ans:'5/6',  opts:['5/6','4/6','1/6','2/3'],   explain:'LCM(2,3)=6 → ³⁄₆+²⁄₆=⁵⁄₆' },
+  { type:'unlike', a1:1,b1:4, a2:1,b2:8, ans:'3/8',  opts:['3/8','2/8','4/8','1/4'],   explain:'LCM(4,8)=8 → ¹⁄₄=²⁄₈ → 2+1=3 → ³⁄₈' },
+  { type:'unlike', a1:2,b1:3, a2:1,b2:6, ans:'5/6',  opts:['5/6','4/6','3/6','1/2'],   explain:'LCM(3,6)=6 → ²⁄₃=⁴⁄₆ → 4+1=5 → ⁵⁄₆' },
+  { type:'unlike', a1:1,b1:2, a2:1,b2:6, ans:'4/6',  opts:['4/6','3/6','5/6','2/3'],   explain:'LCM(2,6)=6 → ¹⁄₂=³⁄₆ → 3+1=4 → ⁴⁄₆ (= ²⁄₃)' },
+  { type:'unlike', a1:3,b1:4, a2:1,b2:8, ans:'7/8',  opts:['7/8','6/8','5/8','3/4'],   explain:'LCM(4,8)=8 → ³⁄₄=⁶⁄₈ → 6+1=7 → ⁷⁄₈' },
+];
+
+let qList=[], qIndex=0, score=0, timerInterval=null, answered=false, history=[];
+let selectedDiff='easy';
+const DIFF_TIME={easy:30, medium:20, hard:10};
+
+function selectDiff(btn){
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedDiff=btn.dataset.d;
+}
+
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+
+function fracHTML(n,d,color){
+  return `<span class="q-frac" style="color:${color}"><span class="n">${n}</span><span class="d">${d}</span></span>`;
+}
+
+function startQuiz(){
+  document.getElementById('quiz-start').style.display='none';
+  document.getElementById('quiz-results').style.display='none';
+  document.getElementById('quiz-active').style.display='block';
+  qList=shuffle(ALL_QUESTIONS);
+  qIndex=0; score=0; history=[];
+  document.getElementById('q-score').textContent='0';
+  loadQuestion();
+}
+
+function resetQuiz(){
+  clearInterval(timerInterval);
+  document.getElementById('quiz-active').style.display='none';
+  document.getElementById('quiz-results').style.display='none';
+  document.getElementById('quiz-start').style.display='block';
+}
+
+function loadQuestion(){
+  answered=false;
+  document.getElementById('next-btn').className='next-btn';
+  document.getElementById('q-feedback').textContent='';
+  document.getElementById('q-feedback').className='feedback';
+  document.getElementById('q-explain').className='q-explain';
+
+  const q=qList[qIndex];
+  document.getElementById('q-current').textContent=qIndex+1;
+  const pct=Math.round(qIndex/14*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'%';
+
+  const tag=document.getElementById('q-type-tag');
+  tag.textContent=q.type==='like'?'🟢 Like Denominators':'🔵 Unlike Denominators';
+  tag.className='q-type-tag '+(q.type==='like'?'like-tag':'unlike-tag');
+
+  document.getElementById('q-equation').innerHTML=
+    fracHTML(q.a1,q.b1,'var(--orange)')+
+    `<span class="q-plus">+</span>`+
+    fracHTML(q.a2,q.b2,'var(--blue)')+
+    `<span class="q-eqsign">= ?</span>`;
+
+  const grid=document.getElementById('options-grid'); grid.innerHTML='';
+  shuffle(q.opts).forEach(opt=>{
+    const [n,d]=opt.split('/');
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.innerHTML=fracHTML(n,d,'inherit').replace('q-frac','q-frac');
+    btn.innerHTML=`<span class="q-frac" style="color:inherit"><span class="n">${n}</span><span class="d">${d}</span></span>`;
+    btn.onclick=()=>selectAnswer(btn,opt,q);
+    grid.appendChild(btn);
+  });
+
+  startTimer(DIFF_TIME[selectedDiff]);
+}
+
+function startTimer(sec){
+  clearInterval(timerInterval);
+  let t=sec;
+  const ring=document.getElementById('timer-ring');
+  const num=document.getElementById('timer-num');
+  const circ=213.6;
+  ring.style.stroke='var(--orange)';
+  num.className='timer-num';
+
+  const tick=()=>{
+    ring.style.strokeDashoffset=circ*(1-t/sec);
+    num.textContent=t;
+    if(t<=5){ ring.style.stroke='var(--red)'; num.className='timer-num urgent'; }
+    if(t<=0){ clearInterval(timerInterval); timeUp(); return; }
+    t--;
+  };
+  tick();
+  timerInterval=setInterval(tick,1000);
+}
+
+function timeUp(){
+  if(answered) return;
+  answered=true;
+  const q=qList[qIndex];
+  document.querySelectorAll('.opt-btn').forEach(btn=>{
+    btn.disabled=true;
+    const n=btn.querySelector('.n').textContent, d=btn.querySelector('.d').textContent;
+    if(n+'/'+d===q.ans) btn.classList.add('correct');
+  });
+  document.getElementById('q-feedback').textContent='⏰ Time\'s up!';
+  document.getElementById('q-feedback').className='feedback bad';
+  showExplain(q);
+  history.push({q,correct:false,timedOut:true});
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function selectAnswer(btn,opt,q){
+  if(answered) return;
+  answered=true;
+  clearInterval(timerInterval);
+  const correct=(opt===q.ans);
+  document.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled=true;
+    const n=b.querySelector('.n').textContent, d=b.querySelector('.d').textContent;
+    if(n+'/'+d===q.ans) b.classList.add('correct');
+  });
+  if(correct){
+    btn.classList.add('correct');
+    score++; document.getElementById('q-score').textContent=score;
+    document.getElementById('q-feedback').textContent='✅ Correct! Well done!';
+    document.getElementById('q-feedback').className='feedback ok';
+    launchConfetti(14);
+  } else {
+    btn.classList.add('wrong');
+    document.getElementById('q-feedback').textContent='❌ Not quite — check below 👇';
+    document.getElementById('q-feedback').className='feedback bad';
+  }
+  showExplain(q);
+  history.push({q,correct});
+  document.getElementById('next-btn').className='next-btn show';
+}
+
+function showExplain(q){
+  const el=document.getElementById('q-explain');
+  el.innerHTML=`💡 ${q.explain}`;
+  el.className='q-explain show';
+}
+
+function nextQuestion(){
+  qIndex++;
+  if(qIndex>=14){ showResults(); return; }
+  loadQuestion();
+}
+
+function showResults(){
+  clearInterval(timerInterval);
+  document.getElementById('quiz-active').style.display='none';
+  document.getElementById('quiz-results').style.display='block';
+  document.getElementById('res-score').textContent=score;
+  const pct=score/14;
+  let medal='🥉', msg='Keep practising — you can do it!';
+  if(pct>=6/7){ medal='🥇'; msg='Outstanding! You\'re a fractions star! ⭐'; }
+  else if(pct>=0.7){ medal='🥈'; msg='Great job! Just a little more practice!'; }
+  else if(pct>=0.5){ medal='🎖️'; msg='Good effort! Review the lesson and try again!'; }
+  document.getElementById('result-medal').textContent=medal;
+  document.getElementById('result-msg').textContent=msg;
+  if(pct>=0.7) launchConfetti(60);
+
+  const bd=document.getElementById('breakdown');
+  bd.innerHTML='<h3>📋 Question Breakdown</h3>';
+  history.forEach((h,i)=>{
+    const item=document.createElement('div');
+    item.className='bd-item '+(h.correct?'bd-ok':'bd-bad');
+    const q=h.q;
+    item.innerHTML=`<span style="font-size:18px">${h.correct?'✅':'❌'}</span><span><b>Q${i+1}:</b> ${q.a1}/${q.b1} + ${q.a2}/${q.b2} = <b>${q.ans}</b>${h.timedOut?' (timed out)':''} <span style="opacity:.55">[${q.type}]</span></span>`;
+    bd.appendChild(item);
   });
 }
 
-function animateUnlike(){
-  const btn=document.getElementById('unlike-btn');
-  btn.disabled=true;
-
-  const show=(id,delay)=> setTimeout(()=>{
-    const el=document.getElementById(id);
-    if(el) el.style.opacity='1';
-  },delay);
-
-  show('u-step1',300);
-  show('u-step2',1200);
-  show('u-lcm-box',1600);
-  show('u-step3',2600);
-  show('u-convert-box',3000);
-  show('u-step4',4200);
-  show('u-add-box',4600);
-
-  // bars
-  setTimeout(()=>{
-    document.getElementById('ubar-a').style.width='50%';
-    document.getElementById('ubar-b').style.width='33.33%';
-    document.getElementById('ubar-c').style.width='16.67%';
-  },4800);
-
-  // answer
-  setTimeout(()=>{
-    const uans=document.getElementById('unlike-ans');
-    uans.innerHTML='<span class="frac" style="color:var(--orange)"><span class="num">5</span><span class="den">6</span></span>';
-  },5800);
-
-  setTimeout(()=>{
-    document.getElementById('unlike-answer').style.display='block';
-    launchConfetti();
-    btn.textContent='🔄 Replay';
-    btn.disabled=false;
-    btn.onclick=()=>{ resetUnlike(); setTimeout(animateUnlike,100); };
-  },6400);
-}
-
-// ── CONFETTI ──────────────────────────────────────────────
-function launchConfetti(){
-  const colors=['#FFD93D','#FF6B35','#6BCB77','#4D96FF','#C77DFF','#FF4D6D'];
-  for(let i=0;i<60;i++){
-    const el=document.createElement('div');
-    el.className='confetti-piece';
-    el.style.cssText=`left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*6)]};animation-delay:${Math.random()*1.2}s;transform:rotateZ(${Math.random()*360}deg);`;
+// ── Confetti
+function launchConfetti(count=50){
+  const cols=['#FFD93D','#FF6B35','#6BCB77','#4D96FF','#C77DFF','#FF4D6D'];
+  for(let i=0;i<count;i++){
+    const el=document.createElement('div'); el.className='confetti-piece';
+    el.style.cssText=`left:${Math.random()*100}%;background:${cols[i%6]};animation-delay:${Math.random()*1.2}s;transform:rotateZ(${Math.random()*360}deg)`;
     document.body.appendChild(el);
     setTimeout(()=>el.remove(),4000);
   }
 }
 
-// ── Init ──────────────────────────────────────────────────
-buildLikePies();
-buildUnlikePies();
-buildUnlikePies(); // called once on load
+// Init
+buildLikePies(); buildUnlikePies();
 </script>
 </body>
 </html>
