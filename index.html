@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adding Fractions – Year 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #fff9f0;
+    --yellow: #FFD93D;
+    --orange: #FF6B35;
+    --green: #6BCB77;
+    --blue: #4D96FF;
+    --purple: #C77DFF;
+    --red: #FF4D6D;
+    --dark: #2d2d2d;
+    --card: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--sky);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Floating bubbles background */
+  .bubbles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .bubble {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.12;
+    animation: float linear infinite;
+  }
+  @keyframes float {
+    0% { transform: translateY(110vh) scale(0.8); }
+    100% { transform: translateY(-20vh) scale(1.2); }
+  }
+
+  .wrapper { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  /* HEADER */
+  header { text-align: center; margin-bottom: 36px; }
+  .badge {
+    display: inline-block;
+    background: var(--orange);
+    color: #fff;
+    font-family: 'Fredoka One', cursive;
+    font-size: 13px;
+    padding: 4px 16px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    box-shadow: 0 3px 10px rgba(255,107,53,0.35);
+  }
+  h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(28px, 6vw, 46px);
+    color: var(--dark);
+    line-height: 1.1;
+  }
+  h1 span { color: var(--orange); }
+  .subtitle { color: #888; font-size: 15px; margin-top: 6px; font-weight: 600; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
+  .tab {
+    font-family: 'Fredoka One', cursive;
+    font-size: 16px;
+    padding: 10px 28px;
+    border-radius: 50px;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: #fff;
+    color: #aaa;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .tab.active-like { background: var(--green); color: #fff; border-color: #4a9f56; box-shadow: 0 6px 18px rgba(107,203,119,0.4); }
+  .tab.active-unlike { background: var(--blue); color: #fff; border-color: #2e74cc; box-shadow: 0 6px 18px rgba(77,150,255,0.4); }
+  .tab:not(.active-like):not(.active-unlike):hover { border-color: #ccc; color: #555; }
+
+  /* LESSON CARD */
+  .lesson { display: none; animation: slideIn 0.4s ease; }
+  .lesson.active { display: block; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* STEP */
+  .step-card {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.07);
+    border-left: 6px solid var(--green);
+    position: relative;
+    overflow: hidden;
+  }
+  .step-card.blue-border { border-left-color: var(--blue); }
+  .step-card.yellow-border { border-left-color: var(--yellow); border-left-width: 6px; }
+  .step-card.purple-border { border-left-color: var(--purple); }
+
+  .step-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #bbb;
+    margin-bottom: 6px;
+  }
+  .step-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    color: var(--dark);
+    margin-bottom: 14px;
+  }
+
+  /* PIE VISUALS */
+  .pie-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; margin: 18px 0; }
+  .pie-wrap { text-align: center; }
+  .pie-label {
+    font-family: 'Fredoka One', cursive;
+    font-size: 26px;
+    margin-top: 8px;
+    color: var(--dark);
+  }
+  .pie-sub { font-size: 12px; color: #999; font-weight: 700; }
+
+  svg.pie { overflow: visible; }
+
+  /* OPERATOR */
+  .op {
+    font-family: 'Fredoka One', cursive;
+    font-size: 40px;
+    color: var(--orange);
+    margin: 0 4px;
+  }
+
+  /* Equation display */
+  .eq-box {
+    background: #fffbf0;
+    border: 3px dashed var(--yellow);
+    border-radius: 18px;
+    padding: 18px 24px;
+    text-align: center;
+    margin: 14px 0;
+  }
+  .eq {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(28px, 6vw, 44px);
+    color: var(--dark);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.1;
+  }
+  .frac .num { border-bottom: 3px solid currentColor; padding-bottom: 2px; min-width: 28px; text-align: center; }
+  .frac .den { padding-top: 2px; min-width: 28px; text-align: center; }
+
+  /* Rule box */
+  .rule-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: linear-gradient(135deg, #f0fff4, #e8f5fe);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-top: 14px;
+  }
+  .rule-icon { font-size: 28px; }
+  .rule-text { font-size: 15px; color: #444; font-weight: 700; line-height: 1.6; }
+
+  /* Unlike extra steps */
+  .step-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+  }
+  .step-pill {
+    background: var(--blue);
+    color: #fff;
+    font-family: 'Fredoka One', cursive;
+    font-size: 14px;
+    padding: 5px 16px;
+    border-radius: 20px;
+  }
+  .step-pill.green { background: var(--green); }
+  .step-pill.purple { background: var(--purple); }
+  .step-pill.orange { background: var(--orange); }
+
+  /* ANIMATE BAR */
+  .bar-container { margin: 16px 0; }
+  .bar-track {
+    display: flex;
+    height: 52px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 3px solid #e0e0e0;
+    background: #f5f5f5;
+    position: relative;
+  }
+  .bar-seg {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 14px;
+    color: #fff;
+    transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .bar-seg::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40%;
+    background: rgba(255,255,255,0.2);
+    border-radius: 0 0 50% 50%;
+  }
+
+  /* ANSWER REVEAL */
+  .answer-reveal {
+    text-align: center;
+    padding: 24px;
+    background: linear-gradient(135deg, #ffe8d6, #fff3cd);
+    border-radius: 20px;
+    border: 3px solid var(--yellow);
+    margin-top: 10px;
+  }
+  .answer-reveal .big {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(36px, 8vw, 60px);
+    color: var(--orange);
+    animation: pop 0.6s ease;
+  }
+  @keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .answer-reveal .msg { font-size: 16px; font-weight: 800; color: #777; margin-top: 4px; }
+
+  /* PLAY BUTTON */
+  .play-btn {
+    display: block;
+    margin: 20px auto 0;
+    background: var(--orange);
+    color: #fff;
+    font-family: 'Fredoka One', cursive;
+    font-size: 18px;
+    padding: 13px 40px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(255,107,53,0.4);
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .play-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(255,107,53,0.45); }
+  .play-btn:active { transform: scale(0.97); }
+  .play-btn.green-btn { background: var(--green); box-shadow: 0 6px 20px rgba(107,203,119,0.4); }
+  .play-btn.green-btn:hover { box-shadow: 0 10px 26px rgba(107,203,119,0.45); }
+
+  /* CONFETTI */
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 14px;
+    top: -20px;
+    border-radius: 2px;
+    animation: confettiFall 3s ease-in forwards;
+    pointer-events: none;
+    z-index: 9999;
+  }
+  @keyframes confettiFall {
+    0%   { transform: translateY(0) rotateZ(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotateZ(720deg); opacity: 0; }
+  }
+
+  /* Mobile */
+  @media (max-width: 500px) {
+    .step-card { padding: 20px 18px; }
+    .pie-row { gap: 10px; }
+    .op { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating bubbles -->
+<div class="bubbles" id="bubbles"></div>
+
+<div class="wrapper">
+  <header>
+    <div class="badge">📐 YEAR 3 MATHS</div>
+    <h1>Adding <span>Fractions</span> 🍕</h1>
+    <p class="subtitle">Tap a tab to start learning — it's easy and fun!</p>
+  </header>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active-like" onclick="showLesson('like')">🟢 Like Denominators</div>
+    <div class="tab" onclick="showLesson('unlike')">🔵 Unlike Denominators</div>
+  </div>
+
+  <!-- ===== LIKE DENOMINATORS ===== -->
+  <div class="lesson active" id="like">
+
+    <div class="step-card">
+      <div class="step-num">What it means</div>
+      <div class="step-title">🟢 LIKE Denominators = Same bottom number!</div>
+      <div class="rule-box">
+        <div class="rule-icon">💡</div>
+        <div class="rule-text">
+          When the <b>bottom numbers are the same</b>, just <b>add the top numbers</b>.<br>
+          The bottom number <b>stays the same</b>. Easy!
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card yellow-border">
+      <div class="step-num">Example</div>
+      <div class="step-title">🍕 Let's add: ²⁄₅ + ¹⁄₅</div>
+      <p style="color:#888;font-weight:700;font-size:14px;margin-bottom:4px;">Think of a pizza cut into 5 equal slices!</p>
+
+      <!-- PIE CHARTS -->
+      <div class="pie-row" id="like-pies">
+        <!-- JS will fill in -->
+      </div>
+
+      <div class="eq-box" id="like-eq" style="opacity:0;transition:opacity 0.6s">
+        <div class="eq">
+          <span class="frac" style="color:var(--orange)"><span class="num">2</span><span class="den">5</span></span>
+          <span style="color:#555">+</span>
+          <span class="frac" style="color:var(--green)"><span class="num">1</span><span class="den">5</span></span>
+          <span style="color:#555">=</span>
+          <span class="frac" style="color:var(--blue)"><span class="num" id="like-ans-num">?</span><span class="den">5</span></span>
+        </div>
+      </div>
+
+      <!-- BAR -->
+      <div class="bar-container">
+        <p style="font-weight:800;font-size:13px;color:#aaa;margin-bottom:6px;">FRACTION BAR (out of 5 slices)</p>
+        <div class="bar-track">
+          <div class="bar-seg" id="bar-a" style="width:0%;background:var(--orange)"></div>
+          <div class="bar-seg" id="bar-b" style="width:0%;background:var(--green)"></div>
+          <div class="bar-seg" id="bar-c" style="width:0%;background:#e8e8e8;color:#bbb"></div>
+        </div>
+      </div>
+
+      <div id="like-answer" style="display:none">
+        <div class="answer-reveal">
+          <div class="big">²⁄₅ + ¹⁄₅ = <span style="color:var(--blue)">³⁄₅</span> 🎉</div>
+          <div class="msg">We added 2 + 1 = 3 slices. The bottom stays 5!</div>
+        </div>
+      </div>
+
+      <button class="play-btn green-btn" id="like-btn" onclick="animateLike()">▶ Show Me!</button>
+    </div>
+
+    <div class="step-card">
+      <div class="step-num">The Simple Rule</div>
+      <div class="step-title">📝 Formula</div>
+      <div class="eq-box">
+        <div class="eq" style="font-size:clamp(18px,4vw,28px)">
+          <span class="frac" style="color:var(--orange)"><span class="num">a</span><span class="den">n</span></span>
+          <span style="color:#555">+</span>
+          <span class="frac" style="color:var(--green)"><span class="num">b</span><span class="den">n</span></span>
+          <span style="color:#555">=</span>
+          <span class="frac" style="color:var(--blue)"><span class="num">a + b</span><span class="den">n</span></span>
+        </div>
+      </div>
+      <div class="rule-box">
+        <div class="rule-icon">✏️</div>
+        <div class="rule-text">Add only the <b>numerators (top)</b>.<br>Keep the <b>denominator (bottom) the same</b>.</div>
+      </div>
+    </div>
+
+  </div><!-- /like -->
+
+  <!-- ===== UNLIKE DENOMINATORS ===== -->
+  <div class="lesson" id="unlike">
+
+    <div class="step-card blue-border">
+      <div class="step-num">What it means</div>
+      <div class="step-title">🔵 UNLIKE Denominators = Different bottom numbers!</div>
+      <div class="rule-box">
+        <div class="rule-icon">💡</div>
+        <div class="rule-text">
+          When the <b>bottom numbers are different</b>, we must make them <b>the same first</b>.<br>
+          We find the <b>LCM</b> (Lowest Common Multiple) and convert both fractions.
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card blue-border">
+      <div class="step-num">Example</div>
+      <div class="step-title">🍫 Let's add: ¹⁄₂ + ¹⁄₃</div>
+
+      <!-- STEP 1: Show fractions -->
+      <div class="step-row" id="u-step1" style="opacity:0;transition:opacity 0.5s">
+        <div class="step-pill">Step 1</div>
+        <span style="font-weight:800;color:#555;font-size:15px">Write the fractions: <b style="color:var(--blue)">¹⁄₂</b> and <b style="color:var(--purple)">¹⁄₃</b></span>
+      </div>
+
+      <!-- PIE section -->
+      <div class="pie-row" id="unlike-pies" style="margin-top:10px"></div>
+
+      <!-- STEP 2: LCM -->
+      <div class="step-row" id="u-step2" style="opacity:0;transition:opacity 0.5s;margin-top:10px">
+        <div class="step-pill green">Step 2</div>
+        <span style="font-weight:800;color:#555;font-size:15px">Find LCM of 2 and 3 → <b style="color:var(--green)">LCM = 6</b></span>
+      </div>
+      <div id="u-lcm-box" style="opacity:0;transition:opacity 0.5s">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+          <div style="background:#f0fff4;border:2px solid var(--green);border-radius:12px;padding:8px 16px;font-weight:800;font-size:14px;color:#444">Multiples of 2: <span style="color:var(--blue)">2, 4, <u>6</u>, 8…</span></div>
+          <div style="background:#f0f5ff;border:2px solid var(--blue);border-radius:12px;padding:8px 16px;font-weight:800;font-size:14px;color:#444">Multiples of 3: <span style="color:var(--purple)">3, <u>6</u>, 9…</span></div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Convert -->
+      <div class="step-row" id="u-step3" style="opacity:0;transition:opacity 0.5s;margin-top:10px">
+        <div class="step-pill purple">Step 3</div>
+        <span style="font-weight:800;color:#555;font-size:15px">Convert both to sixths</span>
+      </div>
+      <div id="u-convert-box" style="opacity:0;transition:opacity 0.5s">
+        <div class="eq-box" style="margin:10px 0">
+          <div class="eq" style="font-size:clamp(16px,3.5vw,24px);gap:8px">
+            <span class="frac" style="color:var(--blue)"><span class="num">1</span><span class="den">2</span></span>
+            <span style="color:#aaa;font-size:16px">×</span>
+            <span class="frac" style="color:#aaa;font-size:20px"><span class="num">3</span><span class="den">3</span></span>
+            <span style="color:#555">=</span>
+            <span class="frac" style="color:var(--blue)"><span class="num">3</span><span class="den">6</span></span>
+            <span style="color:#ddd;margin:0 6px">|</span>
+            <span class="frac" style="color:var(--purple)"><span class="num">1</span><span class="den">3</span></span>
+            <span style="color:#aaa;font-size:16px">×</span>
+            <span class="frac" style="color:#aaa;font-size:20px"><span class="num">2</span><span class="den">2</span></span>
+            <span style="color:#555">=</span>
+            <span class="frac" style="color:var(--purple)"><span class="num">2</span><span class="den">6</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Add -->
+      <div class="step-row" id="u-step4" style="opacity:0;transition:opacity 0.5s;margin-top:10px">
+        <div class="step-pill orange">Step 4</div>
+        <span style="font-weight:800;color:#555;font-size:15px">Now add! Same denominator ✅</span>
+      </div>
+      <div id="u-add-box" style="opacity:0;transition:opacity 0.5s">
+        <div class="eq-box">
+          <div class="eq">
+            <span class="frac" style="color:var(--blue)"><span class="num">3</span><span class="den">6</span></span>
+            <span style="color:#555">+</span>
+            <span class="frac" style="color:var(--purple)"><span class="num">2</span><span class="den">6</span></span>
+            <span style="color:#555">=</span>
+            <span class="frac" style="color:var(--orange)" id="unlike-ans">?</span>
+          </div>
+        </div>
+
+        <!-- BAR -->
+        <div class="bar-container">
+          <p style="font-weight:800;font-size:13px;color:#aaa;margin-bottom:6px;">FRACTION BAR (out of 6 equal parts)</p>
+          <div class="bar-track">
+            <div class="bar-seg" id="ubar-a" style="width:0%;background:var(--blue)"></div>
+            <div class="bar-seg" id="ubar-b" style="width:0%;background:var(--purple)"></div>
+            <div class="bar-seg" id="ubar-c" style="width:0%;background:#e8e8e8;color:#ccc"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="unlike-answer" style="display:none">
+        <div class="answer-reveal">
+          <div class="big">¹⁄₂ + ¹⁄₃ = <span style="color:var(--orange)">⁵⁄₆</span> 🎉</div>
+          <div class="msg">3 + 2 = 5 sixths. That's ⁵⁄₆!</div>
+        </div>
+      </div>
+
+      <button class="play-btn" id="unlike-btn" onclick="animateUnlike()">▶ Show Me!</button>
+    </div>
+
+    <div class="step-card purple-border">
+      <div class="step-num">The Simple Rule</div>
+      <div class="step-title">📝 Steps to Remember</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+        <div class="rule-box">
+          <div class="rule-icon">1️⃣</div>
+          <div class="rule-text">Find the <b>LCM</b> of both denominators</div>
+        </div>
+        <div class="rule-box">
+          <div class="rule-icon">2️⃣</div>
+          <div class="rule-text"><b>Convert</b> both fractions to the same denominator</div>
+        </div>
+        <div class="rule-box">
+          <div class="rule-icon">3️⃣</div>
+          <div class="rule-text"><b>Add the numerators</b> — keep the new denominator!</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /unlike -->
+</div><!-- /wrapper -->
+
+<script>
+// ── Bubbles ──────────────────────────────────────────────
+const bubbleColors = ['#FFD93D','#FF6B35','#6BCB77','#4D96FF','#C77DFF','#FF4D6D'];
+const bc = document.getElementById('bubbles');
+for(let i=0;i<18;i++){
+  const b = document.createElement('div');
+  b.className='bubble';
+  const size = 30+Math.random()*90;
+  b.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${bubbleColors[i%6]};animation-duration:${8+Math.random()*14}s;animation-delay:${Math.random()*-14}s;`;
+  bc.appendChild(b);
+}
+
+// ── Tabs ──────────────────────────────────────────────────
+function showLesson(id){
+  document.querySelectorAll('.lesson').forEach(l=>l.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>{ t.className='tab'; });
+  document.getElementById(id).classList.add('active');
+  const tabs = document.querySelectorAll('.tab');
+  if(id==='like'){ tabs[0].classList.add('active-like'); }
+  else { tabs[1].classList.add('active-unlike'); }
+  // reset animations
+  resetLike(); resetUnlike();
+}
+
+// ── SVG PIE HELPER ────────────────────────────────────────
+function makePie(slices, total, colors, label, sub){
+  const r=52, cx=60, cy=60;
+  const anglePerSlice = 360/total;
+  let paths='';
+  for(let i=0;i<slices;i++){
+    const startA=(i*anglePerSlice-90)*(Math.PI/180);
+    const endA=((i+1)*anglePerSlice-90)*(Math.PI/180);
+    const x1=cx+r*Math.cos(startA), y1=cy+r*Math.sin(startA);
+    const x2=cx+r*Math.cos(endA),   y2=cy+r*Math.sin(endA);
+    const large=anglePerSlice>180?1:0;
+    paths+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} Z" fill="${colors[i]}" stroke="white" stroke-width="2"/>`;
+  }
+  // empty slices
+  for(let i=slices;i<total;i++){
+    const startA=(i*anglePerSlice-90)*(Math.PI/180);
+    const endA=((i+1)*anglePerSlice-90)*(Math.PI/180);
+    const x1=cx+r*Math.cos(startA), y1=cy+r*Math.sin(startA);
+    const x2=cx+r*Math.cos(endA),   y2=cy+r*Math.sin(endA);
+    const large=anglePerSlice>180?1:0;
+    paths+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${large},1 ${x2},${y2} Z" fill="#f0f0f0" stroke="white" stroke-width="2"/>`;
+  }
+  const wrap=document.createElement('div');
+  wrap.className='pie-wrap';
+  wrap.innerHTML=`<svg class="pie" width="120" height="120" viewBox="0 0 120 120">${paths}<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#ddd" stroke-width="2"/></svg><div class="pie-label">${label}</div><div class="pie-sub">${sub}</div>`;
+  return wrap;
+}
+
+// ── LIKE – Setup ─────────────────────────────────────────
+function buildLikePies(){
+  const c=document.getElementById('like-pies');
+  c.innerHTML='';
+  // 2/5 orange
+  const oranges=Array(2).fill('var(--orange)');
+  c.appendChild(makePie(2,5,oranges,'²⁄₅','2 out of 5 slices'));
+  const opEl=document.createElement('div'); opEl.className='op'; opEl.textContent='+'; c.appendChild(opEl);
+  // 1/5 green
+  const greens=Array(1).fill('var(--green)');
+  c.appendChild(makePie(1,5,greens,'¹⁄₅','1 out of 5 slices'));
+  const eqEl=document.createElement('div'); eqEl.className='op'; eqEl.textContent='='; c.appendChild(eqEl);
+  // result placeholder
+  const rWrap=document.createElement('div'); rWrap.className='pie-wrap'; rWrap.id='like-result-pie';
+  rWrap.innerHTML=`<svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="#f5f5f5" stroke="#ddd" stroke-width="2"/><text x="60" y="66" text-anchor="middle" font-family="Fredoka One" font-size="22" fill="#ccc">?</text></svg><div class="pie-label" style="color:#ccc">?</div><div class="pie-sub">your answer</div>`;
+  c.appendChild(rWrap);
+}
+
+let likeAnimated=false;
+function resetLike(){
+  likeAnimated=false;
+  buildLikePies();
+  document.getElementById('like-eq').style.opacity='0';
+  document.getElementById('like-ans-num').textContent='?';
+  document.getElementById('bar-a').style.width='0%';
+  document.getElementById('bar-b').style.width='0%';
+  document.getElementById('bar-c').style.width='100%';
+  document.getElementById('like-answer').style.display='none';
+  document.getElementById('like-btn').textContent='▶ Show Me!';
+  document.getElementById('like-btn').disabled=false;
+}
+
+function animateLike(){
+  if(likeAnimated) return;
+  likeAnimated=true;
+  document.getElementById('like-btn').disabled=true;
+
+  // Show equation
+  setTimeout(()=>{ document.getElementById('like-eq').style.opacity='1'; },300);
+
+  // Animate bars
+  setTimeout(()=>{
+    document.getElementById('bar-a').style.width='40%';
+    document.getElementById('bar-b').style.width='20%';
+    document.getElementById('bar-c').style.width='40%';
+  },700);
+
+  // Reveal answer number
+  setTimeout(()=>{
+    document.getElementById('like-ans-num').textContent='3';
+  },1800);
+
+  // Result pie
+  setTimeout(()=>{
+    const c=document.getElementById('like-result-pie');
+    const colors=['var(--orange)','var(--orange)','var(--blue)'];
+    const r=52,cx=60,cy=60,total=5;
+    const a=360/total;
+    let paths='';
+    for(let i=0;i<3;i++){
+      const s=(i*a-90)*(Math.PI/180), e=((i+1)*a-90)*(Math.PI/180);
+      const x1=cx+r*Math.cos(s),y1=cy+r*Math.sin(s),x2=cx+r*Math.cos(e),y2=cy+r*Math.sin(e);
+      paths+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z" fill="${colors[i]}" stroke="white" stroke-width="2"/>`;
+    }
+    for(let i=3;i<5;i++){
+      const s=(i*a-90)*(Math.PI/180), e=((i+1)*a-90)*(Math.PI/180);
+      const x1=cx+r*Math.cos(s),y1=cy+r*Math.sin(s),x2=cx+r*Math.cos(e),y2=cy+r*Math.sin(e);
+      paths+=`<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z" fill="#f0f0f0" stroke="white" stroke-width="2"/>`;
+    }
+    c.innerHTML=`<svg width="120" height="120" viewBox="0 0 120 120" style="animation:pop 0.5s ease">${paths}<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#ddd" stroke-width="2"/></svg><div class="pie-label" style="color:var(--blue)">³⁄₅</div><div class="pie-sub">3 out of 5</div>`;
+  },2000);
+
+  // Big answer
+  setTimeout(()=>{
+    document.getElementById('like-answer').style.display='block';
+    launchConfetti();
+    document.getElementById('like-btn').textContent='🔄 Replay';
+    document.getElementById('like-btn').disabled=false;
+    document.getElementById('like-btn').onclick=()=>{ resetLike(); setTimeout(animateLike,100); };
+  },2500);
+}
+
+// ── UNLIKE – Setup ────────────────────────────────────────
+function buildUnlikePies(){
+  const c=document.getElementById('unlike-pies');
+  c.innerHTML='';
+  c.appendChild(makePie(1,2,['var(--blue)'],'¹⁄₂','1 out of 2 parts'));
+  const op=document.createElement('div'); op.className='op'; op.textContent='+'; c.appendChild(op);
+  c.appendChild(makePie(1,3,['var(--purple)'],'¹⁄₃','1 out of 3 parts'));
+}
+
+let unlikeStep=0;
+function resetUnlike(){
+  unlikeStep=0;
+  buildUnlikePies();
+  ['u-step1','u-step2','u-lcm-box','u-step3','u-convert-box','u-step4','u-add-box'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.opacity='0';
+  });
+  document.getElementById('unlike-answer').style.display='none';
+  const uans=document.getElementById('unlike-ans');
+  if(uans) uans.innerHTML='<span class="num">?</span><span class="den">6</span>';
+  const btn=document.getElementById('unlike-btn');
+  btn.textContent='▶ Show Me!';
+  btn.disabled=false;
+  btn.onclick=animateUnlike;
+  ['ubar-a','ubar-b','ubar-c'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){ el.style.width=id==='ubar-c'?'100%':'0%'; }
+  });
+}
+
+function animateUnlike(){
+  const btn=document.getElementById('unlike-btn');
+  btn.disabled=true;
+
+  const show=(id,delay)=> setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(el) el.style.opacity='1';
+  },delay);
+
+  show('u-step1',300);
+  show('u-step2',1200);
+  show('u-lcm-box',1600);
+  show('u-step3',2600);
+  show('u-convert-box',3000);
+  show('u-step4',4200);
+  show('u-add-box',4600);
+
+  // bars
+  setTimeout(()=>{
+    document.getElementById('ubar-a').style.width='50%';
+    document.getElementById('ubar-b').style.width='33.33%';
+    document.getElementById('ubar-c').style.width='16.67%';
+  },4800);
+
+  // answer
+  setTimeout(()=>{
+    const uans=document.getElementById('unlike-ans');
+    uans.innerHTML='<span class="frac" style="color:var(--orange)"><span class="num">5</span><span class="den">6</span></span>';
+  },5800);
+
+  setTimeout(()=>{
+    document.getElementById('unlike-answer').style.display='block';
+    launchConfetti();
+    btn.textContent='🔄 Replay';
+    btn.disabled=false;
+    btn.onclick=()=>{ resetUnlike(); setTimeout(animateUnlike,100); };
+  },6400);
+}
+
+// ── CONFETTI ──────────────────────────────────────────────
+function launchConfetti(){
+  const colors=['#FFD93D','#FF6B35','#6BCB77','#4D96FF','#C77DFF','#FF4D6D'];
+  for(let i=0;i<60;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.cssText=`left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*6)]};animation-delay:${Math.random()*1.2}s;transform:rotateZ(${Math.random()*360}deg);`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),4000);
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────
+buildLikePies();
+buildUnlikePies();
+buildUnlikePies(); // called once on load
+</script>
+</body>
+</html>
